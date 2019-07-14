@@ -10,8 +10,8 @@ $git = 'GIT_SSH="'.__DIR__.'/ssh" git';
 $repo = $data["repository"]["full_name"];
 if(is_dir("repos/$repo"))
 {
-	shell_exec("cd ".escapeshellarg("repos/$repo")." && $git pull");
 	chdir("repos/$repo");
+	shell_exec("$git pull");
 }
 else
 {
