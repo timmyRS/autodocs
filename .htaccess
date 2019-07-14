@@ -1,0 +1,3 @@
+<Directory rsa>
+	Require all denied
+</Directory>
