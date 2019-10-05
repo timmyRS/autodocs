@@ -23,10 +23,22 @@ else
 shell_exec("$git checkout ".escapeshellarg(substr($data["ref"], 11)));
 if(file_exists(".doxygen"))
 {
-	echo "doxygen .doxygen\n";
-	shell_exec("doxygen .doxygen");
-	if(trim(shell_exec("$git status | tail -n 1")) != "nothing to commit, working tree clean")
+	$config = file_get_contents(".doxygen");
+	$out_pos = strpos($config, "OUTPUT_DIRECTORY       = ");
+	if($out_pos !== false)
 	{
-		shell_exec("$git add . && $git commit -a -m \"Update docs\" --no-verify && $git push");
+		$config = substr($config, $out_pos + 25);
+		$config = trim(substr($config, 0, strpos($config, "\n")));
+		if($config == "")
+		{
+			$config = ".";
+		}
+		ignore_user_abort(true);
+		shell_exec("rm -r $config/docs");
+		shell_exec("doxygen .doxygen");
+		if(trim(shell_exec("$git status | tail -n 1")) != "nothing to commit, working tree clean")
+		{
+			shell_exec("$git add . && $git commit -a -m \"Update docs\" --no-verify && $git push");
+		}
 	}
 }
